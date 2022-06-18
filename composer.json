@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Icekristal\\LaravelInteriorMultiWallet": "src/"
+            "Icekristal\\LaravelInteriorMultiWallet\\": "src/"
         }
     },
     "extra": {
