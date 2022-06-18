@@ -14,11 +14,15 @@ trait InteractsWithMultiWallet
 {
     /**
      *
+     * @param string|null $codeCurrency
+     * @param string|null $balanceType
      * @return MorphMany
      */
-    public function balanceTransaction(): MorphMany
+    public function balanceTransaction(string|null $codeCurrency = null, string|null $balanceType = null): MorphMany
     {
-        return $this->morphMany(config('im_wallet.multi_wallet_model'), 'owner');
+        return $this->morphMany(config('im_wallet.multi_wallet_model'), 'owner')
+            ->when(is_null($codeCurrency), fn($q) => $q->where('code_currency', $codeCurrency))
+            ->when(is_null($balanceType), fn($q) => $q->where('balance_type', $balanceType));
     }
 
     /**
@@ -34,13 +38,20 @@ trait InteractsWithMultiWallet
      * get balance user
      *
      * @param string $codeCurrency
+     * @param string|null $balanceType
      * @return HigherOrderBuilderProxy|int|mixed
      */
-    public function balance(string $codeCurrency = 'YE'): mixed
+    public function balance(string $codeCurrency = 'YE', string|null $balanceType = null): mixed
     {
-        return $this->balanceTransaction()->where('code_currency', $codeCurrency)->select(
-                DB::raw('SUM(CASE WHEN type < 200 THEN amount ELSE amount*-1 END) as amount')
-            )->first()?->amount ?? 0;
+        if (is_null($balanceType)) {
+            $balanceType = config('im_wallet.balance_required_type') ?? 'main';
+        }
+
+        return $this->balanceTransaction()
+                ->where('balance_type', $balanceType)
+                ->where('code_currency', $codeCurrency)->select(
+                    DB::raw('SUM(CASE WHEN type < 200 THEN amount ELSE amount*-1 END) as amount')
+                )->first()?->amount ?? 0;
     }
 
     /**

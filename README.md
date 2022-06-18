@@ -31,7 +31,8 @@ class User extends Model
 get balance user:
 ```php
 $balanceDefaultCurrency = $modelUser->balance();
-$balanceOtherCurrency = $modelUser->balance('key_other_currency');
+$balanceOtherCurrency = $modelUser->balance('key_other_currency'); //default balanceType = main
+$balanceOtherCurrencyAndTypeBalance = $modelUser->balance('key_currency', 'demo'); //default balanceType = main
 ```
 
 set debit balance:
@@ -49,7 +50,8 @@ $modelUser->creditBalance($amount, config('im_wallet.credit.withdrawal'), 'key_c
 ```
 
 
-see all transaction user
+see transaction user
 ```php
-$modelUser->balanceTransaction()
+$modelUser->balanceTransaction()->get(); //All transaction
+$modelUser->balanceTransaction($codeCurrency, $balanceType)->get(); //All transaction only codeCurrency and balanceType
 ```
