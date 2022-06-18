@@ -37,7 +37,7 @@ trait InteractsWithMultiWallet
     {
         return $this->owner()->where('code_currency', $codeCurrency)->select(
                 DB::raw('SUM(CASE WHEN type < 200 THEN amount ELSE amount*-1 END) as amount')
-            )->amount ?? 0;
+            )->first()?->amount ?? 0;
     }
 
     /**
