@@ -1,7 +1,17 @@
 <?php
 return [
     'code_currency' => [
+        'YE' => 'YE', //default
+    ],
+    'code_currency_name' => [
         'YE' => 'conventional unit of measurement', //default
+    ],
+
+    'balance_required_type' => 'main',
+    'balance_type' => [
+        'main' => 'main',
+        'demo' => 'demo',
+        'bonus' => 'bonus'
     ],
 
     'debit' => [
@@ -29,7 +39,7 @@ return [
 
     'commission_default' => 0, // percentage commission (%)
     'commission' => [
-        201 => 3, // set commission on withdrawal
+        201 => 0, // set commission on withdrawal
     ],
 
 

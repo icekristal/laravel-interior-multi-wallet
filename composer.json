@@ -12,11 +12,11 @@
     "minimum-stability": "dev",
     "require": {
         "php": "^8.0",
-        "laravel/framework": "^8.74.0"
+        "laravel/framework": "^8|^9"
     },
     "autoload": {
         "psr-4": {
-            "Icekristal\\LaravelInteriorMultiWallet": "src/"
+            "Icekristal\\LaravelInteriorMultiWallet\\": "src/"
         }
     },
     "extra": {

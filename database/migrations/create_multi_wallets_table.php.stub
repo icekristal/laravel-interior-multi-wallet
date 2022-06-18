@@ -13,7 +13,7 @@ return new class extends Migration
             $table->morphs('owner');
             $table->unsignedTinyInteger('type');
             $table->char('code_currency', 7)->default('YE');
-            $table->enum('balance_type', ['main', 'demo', 'bonus'])->default('main');
+            $table->string('balance_type')->default('main');
             $table->decimal('amount', 12, 8);
             $table->decimal('commission', 12, 8)->default(0);
             $table->nullableMorphs('who');
