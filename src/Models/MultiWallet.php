@@ -49,7 +49,6 @@ class MultiWallet extends Model
         'owner_id' => 'integer',
     ];
 
-
     /**
      * Owner transaction
      *
