@@ -1,6 +1,9 @@
 <?php
 return [
     'code_currency' => [
+        'YE' => 'YE', //default
+    ],
+    'code_currency_name' => [
         'YE' => 'conventional unit of measurement', //default
     ],
 
