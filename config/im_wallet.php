@@ -29,7 +29,7 @@ return [
 
     'commission_default' => 0, // percentage commission (%)
     'commission' => [
-        201 => 3, // set commission on withdrawal
+        201 => 0, // set commission on withdrawal
     ],
 
 
