@@ -21,8 +21,8 @@ trait InteractsWithMultiWallet
     public function balanceTransaction(string|null $codeCurrency = null, string|null $balanceType = null): MorphMany
     {
         return $this->morphMany(config('im_wallet.multi_wallet_model'), 'owner')
-            ->when(is_null($codeCurrency), fn($q) => $q->where('code_currency', $codeCurrency))
-            ->when(is_null($balanceType), fn($q) => $q->where('balance_type', $balanceType));
+            ->when(!is_null($codeCurrency), fn($q) => $q->where('code_currency', $codeCurrency))
+            ->when(!is_null($balanceType), fn($q) => $q->where('balance_type', $balanceType));
     }
 
     /**
