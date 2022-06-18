@@ -38,7 +38,7 @@ trait InteractsWithMultiWallet
      */
     public function balance(string $codeCurrency = 'YE'): mixed
     {
-        return $this->owner()->where('code_currency', $codeCurrency)->select(
+        return $this->balanceTransaction()->where('code_currency', $codeCurrency)->select(
                 DB::raw('SUM(CASE WHEN type < 200 THEN amount ELSE amount*-1 END) as amount')
             )->first()?->amount ?? 0;
     }
@@ -63,7 +63,7 @@ trait InteractsWithMultiWallet
 
         $commission = $this->calcCommission($typeDebit, $amount);
         $amount -= $commission;
-        return $this->owner()->create([
+        return $this->balanceTransaction()->create([
             'type' => $typeDebit,
             'code_currency' => $codeCurrency,
             'balance_type' => $balanceType,
@@ -94,7 +94,7 @@ trait InteractsWithMultiWallet
 
         $commission = $this->calcCommission($typeCredit, $amount);
         $amount -= $commission;
-        return $this->owner()->create([
+        return $this->balanceTransaction()->create([
             'type' => $typeCredit,
             'code_currency' => $codeCurrency,
             'balance_type' => $balanceType,
