@@ -54,7 +54,7 @@ class IceInteriorMultiWalletServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__.'../resources/lang' => resource_path('lang'),
-        ]);
+        ], 'translations');
     }
 
 }
