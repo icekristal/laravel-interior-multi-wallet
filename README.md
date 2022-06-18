@@ -12,6 +12,11 @@ config:
 php artisan vendor:publish --provider="Icekristal\LaravelInteriorMultiWallet\IceInteriorMultiWalletServiceProvider" --tag="config"
 ```
 
+lang:
+```php
+php artisan vendor:publish --provider="Icekristal\LaravelInteriorMultiWallet\IceInteriorMultiWalletServiceProvider" --tag="translations"
+```
+
 
 use:
 ```php
