@@ -2,10 +2,13 @@
 
 namespace Icekristal\LaravelInteriorMultiWallet;
 
+use Exception;
 use Illuminate\Database\Eloquent\HigherOrderBuilderProxy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 trait InteractsWithMultiWallet
 {
@@ -47,9 +50,17 @@ trait InteractsWithMultiWallet
      * @param string $balanceType
      * @param null $who
      * @return Model
+     * @throws Exception
      */
     public function debitBalance(float|int $amount, int $typeDebit = 101, string $codeCurrency = 'YE', string $balanceType = 'main', $who = null): Model
     {
+        $this->validation([
+            'type_debit' => $typeDebit,
+            'code_currency' => $codeCurrency,
+            'balance_type' => $balanceType,
+            'amount' => $amount,
+        ]);
+
         $commission = $this->calcCommission($typeDebit, $amount);
         $amount -= $commission;
         return $this->owner()->create([
@@ -70,9 +81,17 @@ trait InteractsWithMultiWallet
      * @param string $balanceType
      * @param null $who
      * @return Model
+     * @throws Exception
      */
     public function creditBalance(float|int $amount, int $typeCredit = 203, string $codeCurrency = 'YE', string $balanceType = 'main', $who = null): Model
     {
+        $this->validation([
+            'type_credit' => $typeCredit,
+            'code_currency' => $codeCurrency,
+            'balance_type' => $balanceType,
+            'amount' => $amount,
+        ]);
+
         $commission = $this->calcCommission($typeCredit, $amount);
         $amount -= $commission;
         return $this->owner()->create([
@@ -104,5 +123,23 @@ trait InteractsWithMultiWallet
             $commission = $amount / 100 * $commissionDefault;
         }
         return $commission;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function validation($params)
+    {
+        $validator = Validator::make($params, [
+            'type_debit' => ['required_without:type_credit', 'numeric', 'min:100', 'max:199'],
+            'type_credit' => ['required_without:type_debit', 'numeric', 'min:200', 'max:255'],
+            'code_currency' => ['required', Rule::in(array_keys(config('im_wallet.code_currency')))],
+            'balance_type' => ['required', Rule::in(array_keys(config('im_wallet.balance_type')))],
+            'amount' => ['required', 'numeric', 'gt:0'],
+        ]);
+
+        if ($validator->fails()) {
+            throw new Exception($validator->errors()->first() ?? "error validation");
+        }
     }
 }

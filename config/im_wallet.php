@@ -7,6 +7,12 @@ return [
         'YE' => 'conventional unit of measurement', //default
     ],
 
+    'balance_type' => [
+        'main' => 'main',
+        'demo' => 'demo',
+        'bonus' => 'bonus'
+    ],
+
     'debit' => [
         'put' => 101,
         'transfer' => 105,
