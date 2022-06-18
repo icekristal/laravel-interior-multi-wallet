@@ -53,7 +53,7 @@ class IceInteriorMultiWalletServiceProvider extends ServiceProvider
     protected function publishTranslations()
     {
         $this->publishes([
-            __DIR__.'../resources/lang' => resource_path('lang'),
+            __DIR__.'/../resources/lang' => resource_path('lang'),
         ], 'translations');
     }
 
