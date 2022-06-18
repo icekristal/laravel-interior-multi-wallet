@@ -79,8 +79,8 @@ class MultiWallet extends Model
     public function getNamedTypeAttribute(): string
     {
         return  $this->type < 200
-            ? (config('im_wallet.debit_names')[$this->type] ?? 'Debit transaction')
-            : (config('im_wallet.credit_names')[$this->type] ?? 'Credit transaction');
+            ? __(config('im_wallet.debit_names')[$this->type] ?? 'im_wallet.debit_transaction')
+            : __(config('im_wallet.credit_names')[$this->type] ?? 'im_wallet.credit_transaction');
     }
 
     /**

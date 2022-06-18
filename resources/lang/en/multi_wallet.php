@@ -1,5 +1,9 @@
 <?php
 return [
+    'debit_transaction' => "Debit Transaction",
+    'credit_transaction' => "Credit Transaction",
+
+
     'debit_put' => 'Balance replenishment',
     'debit_transfer' => 'Balance replenishment',
 
