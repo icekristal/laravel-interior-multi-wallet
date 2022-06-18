@@ -43,6 +43,7 @@ $modelUser->creditBalance($amount, config('im_wallet.credit.withdrawal'), 'key_o
 $modelUser->creditBalance($amount, config('im_wallet.credit.withdrawal'), 'key_currency', 'type_balance'); //Credit other type_balance, see config im_wallet
 ```
 
+
 see all transaction user
 ```php
 $modelUser->balanceTransaction()
