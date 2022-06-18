@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 
 class IceInteriorMultiWalletServiceProvider extends ServiceProvider
 {
+
     public function register(): void
     {
         $this->registerConfig();
