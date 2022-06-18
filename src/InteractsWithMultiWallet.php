@@ -16,7 +16,7 @@ trait InteractsWithMultiWallet
      *
      * @return MorphMany
      */
-    public function owner(): MorphMany
+    public function balanceTransaction(): MorphMany
     {
         return $this->morphMany(config('im_wallet.multi_wallet_model'), 'owner');
     }
@@ -25,7 +25,7 @@ trait InteractsWithMultiWallet
      *
      * @return MorphMany
      */
-    public function who(): MorphMany
+    public function balanceWhoTransaction(): MorphMany
     {
         return $this->morphMany(config('im_wallet.multi_wallet_model'), 'who');
     }
