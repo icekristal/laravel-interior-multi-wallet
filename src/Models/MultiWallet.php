@@ -25,7 +25,7 @@ class MultiWallet extends Model
 {
     /**
      *
-     * Название таблицы
+     * Name table
      * @var string
      */
     protected $table = 'multi_wallets';
@@ -37,7 +37,7 @@ class MultiWallet extends Model
 
     /**
      *
-     * Атрибуты для мутации типов
+     * Mutation
      *
      * @var array
      */
