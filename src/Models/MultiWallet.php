@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property float $commission
  * @property string $who_type
  * @property integer $who_id
+ * @property string $other
  * @property string $code_currency
  * @property string $signed_amount
  * @property string $named_type
@@ -32,7 +33,7 @@ class MultiWallet extends Model
 
 
     protected $fillable = [
-        'owner_type', 'owner_id', 'amount', 'who_type', 'who_id', 'type', 'code_currency', 'balance_type', 'commission'
+        'owner_type', 'owner_id', 'amount', 'who_type', 'who_id', 'type', 'code_currency', 'balance_type', 'commission', 'other'
     ];
 
     /**
@@ -47,6 +48,7 @@ class MultiWallet extends Model
         'type' => 'integer',
         'who_id' => 'integer',
         'owner_id' => 'integer',
+        'other' => 'object',
     ];
 
     /**

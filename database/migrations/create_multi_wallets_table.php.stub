@@ -17,6 +17,7 @@ return new class extends Migration
             $table->decimal('amount', 12, 8);
             $table->decimal('commission', 12, 8)->default(0);
             $table->nullableMorphs('who');
+            $table->json('other')->nullable();
             $table->timestamps();
         });
     }
