@@ -60,10 +60,11 @@ trait InteractsWithMultiWallet
      * @param string $codeCurrency
      * @param string $balanceType
      * @param null $who
+     * @param array $otherInfo
      * @return Model
      * @throws Exception
      */
-    public function debitBalance(float|int $amount, int $typeDebit = 101, string $codeCurrency = 'YE', string $balanceType = 'main', $who = null): Model
+    public function debitBalance(float|int $amount, int $typeDebit = 101, string $codeCurrency = 'YE', string $balanceType = 'main', $who = null, array $otherInfo = []): Model
     {
         $this->validation([
             'type_debit' => $typeDebit,
@@ -80,6 +81,7 @@ trait InteractsWithMultiWallet
             'balance_type' => $balanceType,
             'amount' => $amount,
             'commission' => $commission,
+            'other' => $otherInfo,
             'who_type' => !is_null($who) ? get_class($who) : null,
             'who_id' => !is_null($who) ? $who->id : null,
         ]);
@@ -91,10 +93,11 @@ trait InteractsWithMultiWallet
      * @param string $codeCurrency
      * @param string $balanceType
      * @param null $who
+     * @param array $otherInfo
      * @return Model
      * @throws Exception
      */
-    public function creditBalance(float|int $amount, int $typeCredit = 203, string $codeCurrency = 'YE', string $balanceType = 'main', $who = null): Model
+    public function creditBalance(float|int $amount, int $typeCredit = 203, string $codeCurrency = 'YE', string $balanceType = 'main', $who = null, array $otherInfo = []): Model
     {
         $this->validation([
             'type_credit' => $typeCredit,
@@ -110,6 +113,7 @@ trait InteractsWithMultiWallet
             'code_currency' => $codeCurrency,
             'balance_type' => $balanceType,
             'amount' => $amount,
+            'other' => $otherInfo,
             'commission' => $commission,
             'who_type' => !is_null($who) ? get_class($who) : null,
             'who_id' => !is_null($who) ? $who->id : null,
