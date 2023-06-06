@@ -4,6 +4,8 @@ namespace Icekristal\LaravelInteriorMultiWallet\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @property integer $id
@@ -80,7 +82,7 @@ class MultiWallet extends Model
      */
     public function getNamedTypeAttribute(): string
     {
-        return  $this->type < 200
+        return $this->type < 200
             ? __(config('im_wallet.debit_names')[$this->type] ?? 'multi_wallet.debit_transaction')
             : __(config('im_wallet.credit_names')[$this->type] ?? 'multi_wallet.credit_transaction');
     }
@@ -94,5 +96,23 @@ class MultiWallet extends Model
     public function getSignedAmountAttribute(): string
     {
         return ($this->type < 200 ? '+' : '-') . number_format($this->amount, 2);
+    }
+
+
+    /**
+     * @param Builder $query
+     * @param string $codeCurrency
+     * @param string|null $balanceType
+     * @return Builder
+     */
+    public function scopeBalance($query, string $codeCurrency = 'YE', string|null $balanceType = null): Builder
+    {
+        if (is_null($balanceType)) {
+            $balanceType = config('im_wallet.balance_required_type') ?? 'main';
+        }
+
+        return $query->select(
+            DB::raw('SUM(CASE WHEN type < 200 THEN amount ELSE amount*-1 END) as amount')
+        )->where('balance_type', $balanceType)->where('code_currency', $codeCurrency);
     }
 }
