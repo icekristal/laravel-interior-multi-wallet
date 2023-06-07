@@ -97,22 +97,4 @@ class MultiWallet extends Model
     {
         return ($this->type < 200 ? '+' : '-') . number_format($this->amount, 2);
     }
-
-
-    /**
-     * @param Builder $query
-     * @param string $codeCurrency
-     * @param string|null $balanceType
-     * @return Builder
-     */
-    public function scopeBalance($query, string $codeCurrency = 'YE', string|null $balanceType = null): Builder
-    {
-        if (is_null($balanceType)) {
-            $balanceType = config('im_wallet.balance_required_type') ?? 'main';
-        }
-
-        return $query->select(
-            DB::raw('SUM(CASE WHEN type < 200 THEN amount ELSE amount*-1 END) as amount')
-        )->where('balance_type', $balanceType)->where('code_currency', $codeCurrency);
-    }
 }

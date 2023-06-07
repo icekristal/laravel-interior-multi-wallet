@@ -3,9 +3,11 @@
 namespace Icekristal\LaravelInteriorMultiWallet;
 
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\HigherOrderBuilderProxy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -48,10 +50,10 @@ trait InteractsWithMultiWallet
         }
 
         return $this->balanceTransaction()
-                ->where('balance_type', $balanceType)
-                ->where('code_currency', $codeCurrency)->select(
-                    DB::raw('SUM(CASE WHEN type < 200 THEN amount ELSE amount*-1 END) as amount')
-                )->first()?->amount ?? 0;
+            ->where('balance_type', $balanceType)
+            ->where('code_currency', $codeCurrency)->select(
+                DB::raw('SUM(CASE WHEN type < 200 THEN amount ELSE amount*-1 END) as amount')
+            )->first()?->amount ?? 0;
     }
 
     /**
@@ -156,5 +158,30 @@ trait InteractsWithMultiWallet
         if ($validator->fails()) {
             throw new Exception($validator->errors()->first() ?? "error validation");
         }
+    }
+
+    /**
+     * @param Builder $query
+     * @param string $codeCurrency
+     * @param string|null $balanceType
+     * @return Builder
+     */
+    public function scopeBalance($query, string $codeCurrency = 'YE', string|null $balanceType = null)
+    {
+        if (is_null($balanceType)) {
+            $balanceType = config('im_wallet.balance_required_type') ?? 'main';
+        }
+
+        return $query
+            ->join('multi_wallets', function (JoinClause $join) use ($codeCurrency, $balanceType) {
+                $join->on('positions.id', '=', 'multi_wallets.owner_id')
+                    ->where('multi_wallets.owner_type', '=', self::class)
+                    ->where('multi_wallets.balance_type', $balanceType)
+                    ->where('multi_wallets.code_currency', $codeCurrency);
+            })
+            ->select(
+                'positions.*',
+                DB::raw('SUM(CASE WHEN type < 200 THEN amount ELSE amount*-1 END) as amount'),
+            )->groupBy('owner_id');
     }
 }
