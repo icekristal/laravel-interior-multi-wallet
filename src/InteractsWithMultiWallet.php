@@ -162,14 +162,23 @@ trait InteractsWithMultiWallet
 
     /**
      * @param Builder $query
-     * @param string $codeCurrency
+     * @param string|null $codeCurrency
      * @param string|null $balanceType
+     * @param string|null $nameColumn
      * @return Builder
      */
-    public function scopeBalance($query, string $codeCurrency = 'YE', string|null $balanceType = null)
+    public function scopeBalance($query, string|null $codeCurrency = null, string|null $balanceType = null, string|null $nameColumn = 'amount')
     {
         if (is_null($balanceType)) {
             $balanceType = config('im_wallet.balance_required_type') ?? 'main';
+        }
+
+        if (is_null($codeCurrency)) {
+            $codeCurrency = config('im_wallet.default_code_currency') ?? 'YE';
+        }
+
+        if (is_null($nameColumn)) {
+            $nameColumn = 'amount_' . $codeCurrency;
         }
 
         return $query
@@ -181,7 +190,7 @@ trait InteractsWithMultiWallet
             })
             ->select(
                 $this->getTable() . '.*',
-                DB::raw('SUM(CASE WHEN type < 200 THEN amount ELSE amount*-1 END) as amount'),
+                DB::raw("SUM(CASE WHEN type < 200 THEN {$nameColumn} ELSE {$nameColumn}*-1 END) as {$nameColumn}"),
             )->groupBy('owner_id');
     }
 }

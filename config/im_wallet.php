@@ -7,6 +7,8 @@ return [
         'YE' => 'conventional unit of measurement', //default
     ],
 
+    'default_code_currency' => 'YE',
+
     'balance_required_type' => 'main',
     'balance_type' => [
         'main' => 'main',
