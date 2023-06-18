@@ -174,13 +174,13 @@ trait InteractsWithMultiWallet
 
         return $query
             ->join('multi_wallets', function (JoinClause $join) use ($codeCurrency, $balanceType) {
-                $join->on('positions.id', '=', 'multi_wallets.owner_id')
+                $join->on($this->getTable() . '.id', '=', 'multi_wallets.owner_id')
                     ->where('multi_wallets.owner_type', '=', self::class)
                     ->where('multi_wallets.balance_type', $balanceType)
                     ->where('multi_wallets.code_currency', $codeCurrency);
             })
             ->select(
-                'positions.*',
+                $this->getTable() . '.*',
                 DB::raw('SUM(CASE WHEN type < 200 THEN amount ELSE amount*-1 END) as amount'),
             )->groupBy('owner_id');
     }
