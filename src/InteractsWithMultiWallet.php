@@ -181,6 +181,8 @@ trait InteractsWithMultiWallet
             $nameColumn = 'amount_' . $codeCurrency;
         }
 
+        if($this->balanceTransaction()->count() < 1) return $query;
+
         return $query
             ->join('multi_wallets', function (JoinClause $join) use ($codeCurrency, $balanceType) {
                 $join->on($this->getTable() . '.id', '=', 'multi_wallets.owner_id')
