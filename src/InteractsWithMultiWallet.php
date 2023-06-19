@@ -182,15 +182,16 @@ trait InteractsWithMultiWallet
         }
 
         return $query
+            ->select(
+                $this->getTable() . '.*',
+                DB::raw("SUM(CASE WHEN multi_wallets.type < 200 THEN {$nameColumn} ELSE {$nameColumn}*-1 END) as {$nameColumn}"),
+            )
             ->join('multi_wallets', function (JoinClause $join) use ($codeCurrency, $balanceType) {
                 $join->on($this->getTable() . '.id', '=', 'multi_wallets.owner_id')
                     ->where('multi_wallets.owner_type', '=', self::class)
                     ->where('multi_wallets.balance_type', $balanceType)
                     ->where('multi_wallets.code_currency', $codeCurrency);
             })
-            ->select(
-                $this->getTable() . '.*',
-                DB::raw("SUM(CASE WHEN type < 200 THEN {$nameColumn} ELSE {$nameColumn}*-1 END) as {$nameColumn}"),
-            )->groupBy('owner_id');
+            ->groupBy('multi_wallets.owner_id');
     }
 }
