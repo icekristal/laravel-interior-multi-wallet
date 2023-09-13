@@ -2,6 +2,7 @@
 
 namespace Icekristal\LaravelInteriorMultiWallet;
 
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\HigherOrderBuilderProxy;
@@ -40,16 +41,18 @@ trait InteractsWithMultiWallet
      * get balance user
      *
      * @param string $codeCurrency
+     * @param ?Carbon $dateAt
      * @param string|null $balanceType
      * @return HigherOrderBuilderProxy|int|mixed
      */
-    public function balance(string $codeCurrency = 'YE', string|null $balanceType = null): mixed
+    public function balance(string $codeCurrency = 'YE', string|null $balanceType = null, Carbon $dateAt = null): mixed
     {
         if (is_null($balanceType)) {
             $balanceType = config('im_wallet.balance_required_type') ?? 'main';
         }
 
         return $this->balanceTransaction()
+            ->when(!is_null($dateAt), fn($q) => $q->where('created_at', '<=', $dateAt))
             ->where('balance_type', $balanceType)
             ->where('code_currency', $codeCurrency)->select(
                 DB::raw('SUM(CASE WHEN type < 200 THEN amount ELSE amount*-1 END) as amount')
