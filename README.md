@@ -55,3 +55,14 @@ see transaction user
 $modelUser->balanceTransaction()->get(); //All transaction
 $modelUser->balanceTransaction($codeCurrency, $balanceType)->get(); //All transaction only codeCurrency and balanceType
 ```
+
+block/unblock transaction user
+```php
+$modelUser->blockTransaction($typeCredit, $codeCurrency, $balanceType); //Block transaction all params (permanent)
+$modelUser->blockTransaction($typeCredit, $codeCurrency); //Block transaction only typeCredit and codeCurrency
+$modelUser->blockTransaction(null, $codeCurrency, $balanceType); //Block transaction only codeCurrency and balanceType
+
+$modelUser->unblockTransaction($typeCredit, $codeCurrency, $balanceType); //Unblock transaction all params
+$modelUser->unblockTransaction($typeCredit, null, $balanceType); //Unblock only typeCredit and balanceType
+$modelUser->unblockTransaction($typeCredit, $codeCurrency); //Unblock only typeCredit and codeCurrency
+```
