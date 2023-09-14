@@ -263,7 +263,7 @@ trait InteractsWithMultiWallet
      * @param array|null $other
      * @return Model
      */
-    public function blockTransaction(int $type = null, string|null $codeCurrency = null, string|null $balanceType = null, $untilAt = null, array $other = null): Model
+    public function blockTransaction(?int $type = null, string|null $codeCurrency = null, string|null $balanceType = null, $untilAt = null, ?array $other = null): Model
     {
         $this->unblockTransaction($type, $codeCurrency, $balanceType);
         return $this->multiWalletRestriction()->create([
