@@ -4,6 +4,7 @@ namespace Icekristal\LaravelInteriorMultiWallet;
 
 use Carbon\Carbon;
 use Exception;
+use Icekristal\LaravelInteriorMultiWallet\Models\MultiWalletRestriction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\HigherOrderBuilderProxy;
 use Illuminate\Database\Eloquent\Model;
@@ -65,7 +66,7 @@ trait InteractsWithMultiWallet
      * @param string $codeCurrency
      * @param string $balanceType
      * @param null $who
-     * @param array $otherInfo
+     * @param array|null $otherInfo
      * @return Model
      * @throws Exception
      */
@@ -98,7 +99,7 @@ trait InteractsWithMultiWallet
      * @param string $codeCurrency
      * @param string $balanceType
      * @param null $who
-     * @param array $otherInfo
+     * @param array|null $otherInfo
      * @return Model
      * @throws Exception
      */
@@ -148,7 +149,7 @@ trait InteractsWithMultiWallet
     /**
      * @throws Exception
      */
-    private function validation($params)
+    private function validation($params): void
     {
         $validator = Validator::make($params, [
             'type_debit' => ['required_without:type_credit', 'numeric', 'min:100', 'max:199'],
@@ -196,5 +197,23 @@ trait InteractsWithMultiWallet
                     ->where('multi_wallets.code_currency', $codeCurrency);
             })
             ->groupBy('multi_wallets.owner_id');
+    }
+
+    /**
+     * @param int|null $type
+     * @param string|null $codeCurrency
+     * @param string|null $balanceType
+     * @return bool
+     */
+    public function isBlockTransaction(int $type = null, string|null $codeCurrency = null, string|null $balanceType = null): bool
+    {
+        return MultiWalletRestriction::query()
+            ->where('target_type', self::class)
+            ->where('target_id', $this->id)
+            ->where('until_at', '>', now())
+            ->where(fn($wType) => $wType->where('type', $type)->orWhereNull('type'))
+            ->where(fn($wCurrency) => $wCurrency->where('code_currency', $codeCurrency)->orWhereNull('code_currency'))
+            ->where(fn($wBalanceType) => $wBalanceType->where('balance_type', $balanceType)->orWhereNull('balance_type'))
+            ->exists();
     }
 }

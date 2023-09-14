@@ -8,16 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('multi_wallets', function (Blueprint $table) {
+        Schema::create('multi_wallet_restrictions', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->morphs('owner');
+            $table->morphs('target');
             $table->unsignedTinyInteger('type');
-            $table->char('code_currency', 7)->default('YE');
-            $table->string('balance_type')->default('main');
-            $table->decimal('amount', 20, 8);
-            $table->decimal('commission', 12, 8)->default(0);
-            $table->nullableMorphs('who');
+            $table->char('code_currency', 7)->nullable();
+            $table->string('balance_type')->nullable();
+            $table->nullableMorphs('author');
             $table->json('other')->nullable();
+            $table->timestamp('until_at')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('multi_wallets');
+        Schema::dropIfExists('multi_wallet_restrictions');
     }
 };

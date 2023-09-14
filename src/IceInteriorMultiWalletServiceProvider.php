@@ -30,7 +30,7 @@ class IceInteriorMultiWalletServiceProvider extends ServiceProvider
 
     protected function registerTranslations()
     {
-        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'multi_wallet');
+        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'multi_wallet');
     }
 
     protected function publishMigrations(): void
@@ -38,6 +38,12 @@ class IceInteriorMultiWalletServiceProvider extends ServiceProvider
         if (!class_exists('CreateMultiWalletsTable')) {
             $this->publishes([
                 __DIR__ . '/../database/migrations/create_multi_wallets_table.php.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_multi_wallets_table.php'),
+            ], 'migrations');
+        }
+        sleep(1);
+        if (!class_exists('CreateMultiWalletRestrictionsTable')) {
+            $this->publishes([
+                __DIR__ . '/../database/migrations/create_multi_wallet_restrictions_table.php.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_multi_wallet_restrictions_table.php'),
             ], 'migrations');
         }
     }
@@ -50,10 +56,10 @@ class IceInteriorMultiWalletServiceProvider extends ServiceProvider
 
     }
 
-    protected function publishTranslations()
+    protected function publishTranslations(): void
     {
         $this->publishes([
-            __DIR__.'/../resources/lang' => resource_path('lang'),
+            __DIR__ . '/../resources/lang' => resource_path('lang'),
         ], 'translations');
     }
 
