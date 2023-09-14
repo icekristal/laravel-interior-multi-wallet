@@ -215,11 +215,11 @@ trait InteractsWithMultiWallet
 
     /**
      * @param int|null $type
-     * @param string|null $codeCurrency
+     * @param string|int|null $codeCurrency
      * @param string|null $balanceType
      * @return bool
      */
-    public function isBlockTransaction(int $type = null, string|null $codeCurrency = null, string|null $balanceType = null): bool
+    public function isBlockTransaction(int $type = null, string|int|null $codeCurrency = null, string|null $balanceType = null): bool
     {
         if (!config('im_wallet.is_enable_restrictions', false)) return false;
         return MultiWalletRestriction::query()
@@ -257,13 +257,13 @@ trait InteractsWithMultiWallet
 
     /**
      * @param int|null $type
-     * @param string|null $codeCurrency
+     * @param string|int|null $codeCurrency
      * @param string|null $balanceType
-     * @param $untilAt
+     * @param null $untilAt
      * @param array|null $other
      * @return Model
      */
-    public function blockTransaction(?int $type = null, string|null $codeCurrency = null, string|null $balanceType = null, $untilAt = null, ?array $other = null): Model
+    public function blockTransaction(?int $type = null, string|int|null $codeCurrency = null, string|null $balanceType = null, $untilAt = null, ?array $other = null): Model
     {
         $this->unblockTransaction($type, $codeCurrency, $balanceType);
         return $this->multiWalletRestriction()->create([
@@ -277,11 +277,11 @@ trait InteractsWithMultiWallet
 
     /**
      * @param int|null $type
-     * @param string|null $codeCurrency
+     * @param string|int|null $codeCurrency
      * @param string|null $balanceType
      * @return mixed
      */
-    public function unblockTransaction(?int $type, ?string $codeCurrency, ?string $balanceType)
+    public function unblockTransaction(?int $type, string|int|null $codeCurrency, ?string $balanceType): mixed
     {
         if (is_null($type) && is_null($codeCurrency) && is_null($balanceType)) return $this->multiWalletRestriction()->delete();
 
