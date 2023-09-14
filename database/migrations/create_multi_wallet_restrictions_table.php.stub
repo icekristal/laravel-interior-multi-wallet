@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('multi_wallet_restrictions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->morphs('target');
-            $table->unsignedTinyInteger('type');
+            $table->unsignedTinyInteger('type')->nullable();
             $table->char('code_currency', 7)->nullable();
             $table->string('balance_type')->nullable();
             $table->nullableMorphs('author');

@@ -210,7 +210,7 @@ trait InteractsWithMultiWallet
      */
     public function multiWalletRestriction(): MorphMany
     {
-        return $this->morphMany(config('im_wallet.multi_wallet_restriction_model', \Icekristal\LaravelInteriorMultiWallet\Models\MultiWalletRestriction::class), 'owner');
+        return $this->morphMany(config('im_wallet.multi_wallet_restriction_model', \Icekristal\LaravelInteriorMultiWallet\Models\MultiWalletRestriction::class), 'target');
     }
 
     /**
