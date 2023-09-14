@@ -44,6 +44,9 @@ return [
         201 => 0, // set commission on withdrawal
     ],
 
+    'is_enable_restrictions' => true, // enable restrictions
 
-    'multi_wallet_model' => \Icekristal\LaravelInteriorMultiWallet\Models\MultiWallet::class
+
+    'multi_wallet_model' => \Icekristal\LaravelInteriorMultiWallet\Models\MultiWallet::class,
+    'multi_wallet_restriction_model' => \Icekristal\LaravelInteriorMultiWallet\Models\MultiWalletRestriction::class,
 ];
