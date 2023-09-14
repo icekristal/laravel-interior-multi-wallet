@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('balance_type')->nullable();
             $table->nullableMorphs('author');
             $table->json('other')->nullable();
-            $table->timestamp('until_at')->nullable();
+            $table->datetime('until_at')->nullable();
             $table->timestamps();
         });
     }
