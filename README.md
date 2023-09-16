@@ -56,6 +56,7 @@ $modelUser->balanceTransaction()->get(); //All transaction
 $modelUser->balanceTransaction($codeCurrency, $balanceType)->get(); //All transaction only codeCurrency and balanceType
 ```
 
+
 block/unblock transaction user
 ```php
 $modelUser->blockTransaction($typeCredit, $codeCurrency, $balanceType); //Block transaction all params (permanent)
