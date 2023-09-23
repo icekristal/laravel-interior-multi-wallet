@@ -19,6 +19,11 @@ return new class extends Migration
             $table->nullableMorphs('who');
             $table->json('other')->nullable();
             $table->timestamps();
+
+            $table->index(['owner_type','owner_id','balance_type', 'code_currency'], 'owner_type_owner_id_balance_type_code_currency');
+            $table->index(['balance_type', 'code_currency']);
+            $table->index(['code_currency']);
+            $table->index(['type']);
         });
     }
 
@@ -29,6 +34,10 @@ return new class extends Migration
      */
     public function down()
     {
+        $table->dropIndex(['owner_type','owner_id','balance_type', 'code_currency']);
+        $table->dropIndex(['balance_type', 'code_currency']);
+        $table->dropIndex(['code_currency']);
+        $table->dropIndex(['type']);
         Schema::dropIfExists('multi_wallets');
     }
 };
