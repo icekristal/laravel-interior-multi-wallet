@@ -2,6 +2,7 @@
 
 namespace Icekristal\LaravelInteriorMultiWallet\Facades;
 
+use Carbon\Carbon;
 use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletBalanceTypeEnum;
 use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletCurrencyEnum;
 use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletTypeEnum;
@@ -16,6 +17,11 @@ use Illuminate\Support\Facades\Facade;
  * @method static ImWalletService setOther(?array $other)
  * @method static ImWalletService setCurrency(string|ImWalletCurrencyEnum $currency)
  * @method static ImWalletService setBalanceType(string|ImWalletBalanceTypeEnum $balanceType)
+ * @method static void executeTransaction()
+ * @method static bool isValid()
+ * @method static mixed blockTransaction(Carbon $untilAt = null, ?array $other = null)
+ * @method static mixed unBlockTransaction()
+ * @method static float|int getBalance(Carbon $dateAt = null)
  */
 class ImWallet extends Facade
 {

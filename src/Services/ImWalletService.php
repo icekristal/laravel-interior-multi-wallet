@@ -2,6 +2,7 @@
 
 namespace Icekristal\LaravelInteriorMultiWallet\Services;
 
+use Carbon\Carbon;
 use Exception;
 use Icekristal\LaravelInteriorMultiWallet\Casts\BalanceTypeCustomCast;
 use Icekristal\LaravelInteriorMultiWallet\Casts\CurrencyCustomCast;
@@ -10,41 +11,70 @@ use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletBalanceTypeEnum;
 use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletCurrencyEnum;
 use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletTypeEnum;
 use Icekristal\LaravelInteriorMultiWallet\Models\MultiWallet;
+use Icekristal\LaravelInteriorMultiWallet\Models\MultiWalletRestriction;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class ImWalletService
 {
-    public object $owner;
+    public object|null $owner = null;
     public float|int $amount = 0;
     public ImWalletTypeEnum $type;
-    public ImWalletCurrencyEnum $currency;
-    public ImWalletBalanceTypeEnum $balanceType;
+    public ImWalletCurrencyEnum $currency = ImWalletCurrencyEnum::YE;
+    public ImWalletBalanceTypeEnum $balanceType = ImWalletBalanceTypeEnum::MAIN;
     public object|null $who;
     public array|null $other = [];
 
+    public mixed $modelImWallet = MultiWallet::class;
+    public mixed $modelRestrictionImWallet = MultiWalletRestriction::class;
+
     public function __construct()
     {
+        $this->modelImWallet = config('im_wallet.multi_wallet_model', MultiWallet::class);
+        $this->modelRestrictionImWallet = config('im_wallet.multi_wallet_restriction_model', MultiWalletRestriction::class);
+    }
 
+    /**
+     * @param Carbon|null $dateAt
+     * @return float|int
+     */
+    public function getBalance(Carbon $dateAt = null): float|int
+    {
+        if(is_null($this->owner)) return 0;
+        return $this->modelImWallet->query()
+            ->where('owner_type', get_class($this->owner))
+            ->where('owner_id', $this->owner->id)
+            ->where('code_currency', $this->currency->value)
+            ->when(!is_null($dateAt), fn($q) => $q->where('created_at', '<=', $dateAt))
+            ->where('balance_type', $this->balanceType->value)->select(
+                DB::raw('SUM(CASE WHEN type < 200 THEN amount*1 ELSE amount*-1 END) as amount')
+            )->value('amount') ?? 0;
     }
 
     /**
      * @throws Exception
      */
-    public function executeTransaction(): void
+    public function executeTransaction(): mixed
     {
         if (!$this->isValid()) {
             throw new Exception('Invalid data');
         }
-        $this->type?->value < 200 ? $this->debit() : $this->credit();
+        return $this->type?->value < 200 ? $this->debit() : $this->credit();
     }
 
-    private function debit(): void
+    /**
+     * @return mixed
+     */
+    private function debit(): mixed
     {
         $this->saveTransaction();
     }
 
-    private function credit()
+    /**
+     * @return mixed
+     */
+    private function credit(): mixed
     {
         $this->saveTransaction();
     }
@@ -54,10 +84,9 @@ class ImWalletService
      */
     private function saveTransaction(): mixed
     {
-        $model = config('im_wallet.multi_wallet_model', MultiWallet::class);
         $commission = $this->calcCommission();
         $finalAmount = $this->amount - $commission;
-        return $model::query()->create([
+        return $this->modelImWallet::query()->create([
             'owner_type' => get_class($this->owner),
             'owner_id' => $this->owner?->id,
             'amount' => $finalAmount,
@@ -101,7 +130,8 @@ class ImWalletService
             'currency' => $this->currency,
             'balanceType' => $this->balanceType,
             'who' => $this->who,
-            'other' => $this->other
+            'other' => $this->other,
+            'is_block_transaction' => $this->isBlockTransaction()
         ], [
             'owner_id' => ['required', 'integer', 'min:1'],
             'amount' => ['required', 'numeric', 'gt:0'],
@@ -109,8 +139,86 @@ class ImWalletService
             'currency' => ['required', Rule::enum(config('im_wallet.currency_enum', ImWalletCurrencyEnum::class))],
             'balanceType' => ['required', Rule::enum(config('im_wallet.balance_type_enum', ImWalletBalanceTypeEnum::class))],
             'who' => ['nullable'],
-            'other' => ['nullable', 'array']
+            'other' => ['nullable', 'array'],
+            'is_block_transaction' => ['required', 'accepted']
         ])->passes();
+    }
+
+    /**
+     * @param Carbon|null $untilAt
+     * @param array|null $other
+     * @return mixed
+     */
+    public function blockTransaction(Carbon $untilAt = null, ?array $other = null): mixed
+    {
+        $this->unBlockTransaction();
+        return $this->modelRestrictionImWallet::query()->create([
+            'target_type' => get_class($this->owner),
+            'target_id' => $this->owner?->id,
+            'type' => $this->type?->value,
+            'code_currency' => $this->currency?->value,
+            'balance_type' => $this->balanceType?->value,
+            'until_at' => $untilAt ?? now()->addYears(100),
+            'other' => $other
+        ]);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function unBlockTransaction(): mixed
+    {
+        return $this->modelRestrictionImWallet::query()
+            ->where('target_type', get_class($this->owner))
+            ->where('target_id', $this->owner?->id)
+            ->where('type', $this->type?->value)
+            ->where('code_currency', $this->currency?->value)
+            ->where('balance_type', $this->balanceType?->value)
+            ->delete();
+    }
+
+    /**
+     * @return bool
+     */
+    private function isBlockTransaction(): bool
+    {
+        if (!config('im_wallet.is_enable_restrictions', false)) return true;
+
+        $type = $this->type?->value;
+        $codeCurrency = $this->currency?->value;
+        $balanceType = $this->balanceType?->value;
+
+        return !$this->modelRestrictionImWallet::query()
+            ->where('target_type', get_class($this->owner))
+            ->where('target_id', $this->owner?->id)
+            ->where('until_at', '>', now())
+            ->where(
+                fn($v) => $v->where(
+                    fn($permanent) => $permanent->whereNull('code_currency')->whereNull('balance_type')->whereNull('type')
+                )->orWhere(
+                    fn($wType) => $wType->where('type', $type)->whereNull('code_currency')->whereNull('balance_type')
+                )->orWhere(
+                    fn($wType) => $wType->where('type', $type)->where('code_currency', $codeCurrency)->whereNull('balance_type')
+                )->orWhere(
+                    fn($wType) => $wType->where('type', $type)->whereNull('code_currency')->where('balance_type', $balanceType)
+                )->orWhere(
+                    fn($wCurrency) => $wCurrency->where('code_currency', $codeCurrency)->whereNull('type')->whereNull('balance_type')
+                )->orWhere(
+                    fn($wCurrency) => $wCurrency->where('code_currency', $codeCurrency)->where('type', $type)->whereNull('balance_type')
+                )->orWhere(
+                    fn($wCurrency) => $wCurrency->where('code_currency', $codeCurrency)->whereNull('type')->where('balance_type', $balanceType)
+                )->orWhere(
+                    fn($wBalanceType) => $wBalanceType->where('balance_type', $balanceType)->whereNull('type')->whereNull('code_currency')
+                )->orWhere(
+                    fn($wBalanceType) => $wBalanceType->where('balance_type', $balanceType)->where('type', $type)->whereNull('code_currency')
+                )->orWhere(
+                    fn($wBalanceType) => $wBalanceType->where('balance_type', $balanceType)->whereNull('type')->where('code_currency', $codeCurrency)
+                )
+                    ->orWhere(
+                        fn($wAll) => $wAll->where('type', $type)->where('code_currency', $codeCurrency)->where('balance_type', $balanceType)
+                    )
+            )
+            ->exists();
     }
 
     /**
