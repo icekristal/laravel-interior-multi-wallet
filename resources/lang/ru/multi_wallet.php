@@ -1,12 +1,19 @@
 <?php
 return [
-    'debit_transaction' => "Дебетовая транзакция",
-    'credit_transaction' => "Кредитная транзакция",
+    'type' => [
+        'debit' => 'Пополнение',
+        'credit' => 'Списание',
+    ],
 
-    'debit_put' => 'Пополнение баланса',
-    'debit_transfer' => 'Перевод от пользователя',
 
-    'credit_withdrawal' => 'Вывод средств',
-    'credit_transfer' => 'Перевод пользователю',
-    'credit_buy' => 'Покупка',
+
+    'balance_type' => [
+        'main' => 'Основной',
+        'demo' => 'Демо',
+        'bonus' => 'Бонусный'
+    ],
+
+    'currency' => [
+        'ye' => 'YE', //default
+    ],
 ];

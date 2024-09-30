@@ -2,6 +2,7 @@
 
 namespace Icekristal\LaravelInteriorMultiWallet;
 
+use Icekristal\LaravelInteriorMultiWallet\Services\ImWalletService;
 use Illuminate\Support\ServiceProvider;
 
 class IceInteriorMultiWalletServiceProvider extends ServiceProvider
@@ -9,6 +10,7 @@ class IceInteriorMultiWalletServiceProvider extends ServiceProvider
 
     public function register(): void
     {
+        $this->app->bind('im_wallet.service', ImWalletService::class);
         $this->registerConfig();
         $this->registerTranslations();
     }
@@ -19,6 +21,7 @@ class IceInteriorMultiWalletServiceProvider extends ServiceProvider
             $this->publishConfigs();
             $this->publishMigrations();
             $this->publishTranslations();
+            $this->publishEnum();
         }
     }
 
@@ -61,6 +64,13 @@ class IceInteriorMultiWalletServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../resources/lang' => resource_path('lang'),
         ], 'translations');
+    }
+
+    protected function publishEnum(): void
+    {
+        $this->publishes([
+            __DIR__ . '/Enums' => app_path('Enums'),
+        ], 'enums');
     }
 
 }

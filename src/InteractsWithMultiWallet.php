@@ -158,8 +158,8 @@ trait InteractsWithMultiWallet
         $validator = Validator::make($params, [
             'type_debit' => ['required_without:type_credit', 'numeric', 'min:100', 'max:199'],
             'type_credit' => ['required_without:type_debit', 'numeric', 'min:200', 'max:255'],
-            'code_currency' => ['required', Rule::in(array_keys(config('im_wallet.code_currency')))],
-            'balance_type' => ['required', Rule::in(array_keys(config('im_wallet.balance_type')))],
+            'code_currency' => ['required', Rule::enum(config('im_wallet.currency_enum'))],
+            'balance_type' => ['required', Rule::enum(config('im_wallet.balance_type_enum'))],
             'amount' => ['required', 'numeric', 'gt:0'],
         ]);
 
@@ -175,7 +175,7 @@ trait InteractsWithMultiWallet
      * @param string|null $nameColumn
      * @return Builder
      */
-    public function scopeBalance($query, string|null $codeCurrency = null, string|null $balanceType = null, string|null $nameColumn = 'amount')
+    public function scopeBalance(Builder $query, string|null $codeCurrency = null, string|null $balanceType = null, string|null $nameColumn = 'amount'): Builder
     {
         if (is_null($balanceType)) {
             $balanceType = config('im_wallet.balance_required_type') ?? 'main';
@@ -192,7 +192,7 @@ trait InteractsWithMultiWallet
         return $query
             ->select(
                 $this->getTable() . '.*',
-                DB::raw("SUM(CASE WHEN multi_wallets.type < 200 THEN {$nameColumn} ELSE {$nameColumn}*-1 END) as {$nameColumn}"),
+                DB::raw("SUM(CASE WHEN multi_wallets.type < 200 THEN {$nameColumn}*1 ELSE {$nameColumn}*-1 END) as {$nameColumn}"),
             )
             ->join('multi_wallets', function (JoinClause $join) use ($codeCurrency, $balanceType) {
                 $join->on($this->getTable() . '.id', '=', 'multi_wallets.owner_id')

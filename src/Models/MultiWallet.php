@@ -2,27 +2,32 @@
 
 namespace Icekristal\LaravelInteriorMultiWallet\Models;
 
+use Carbon\Carbon;
+use Icekristal\LaravelInteriorMultiWallet\Casts\BalanceTypeCustomCast;
+use Icekristal\LaravelInteriorMultiWallet\Casts\CurrencyCustomCast;
+use Icekristal\LaravelInteriorMultiWallet\Casts\TypeCustomCast;
+use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletBalanceTypeEnum;
+use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletCurrencyEnum;
+use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletTypeEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 
 /**
  * @property integer $id
  * @property string $owner_type
  * @property integer $owner_id
- * @property integer $type
+ * @property TypeCustomCast|ImWalletTypeEnum $type
  * @property float $amount
  * @property float $commission
  * @property string $who_type
  * @property integer $who_id
  * @property string $other
- * @property string $code_currency
+ * @property CurrencyCustomCast|ImWalletCurrencyEnum $code_currency
  * @property string $signed_amount
  * @property string $named_type
- * @property string $balance_type
- * @property string $created_at
- * @property string $updated_at
+ * @property BalanceTypeCustomCast|ImWalletBalanceTypeEnum $balance_type
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  */
 class MultiWallet extends Model
 {
@@ -47,11 +52,16 @@ class MultiWallet extends Model
     protected $casts = [
         'amount' => 'float',
         'commission' => 'float',
-        'type' => 'integer',
         'who_id' => 'integer',
         'owner_id' => 'integer',
         'other' => 'object',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'type' => TypeCustomCast::class,
+        'balance_type' => BalanceTypeCustomCast::class,
+        'code_currency' => CurrencyCustomCast::class
     ];
+
 
     /**
      * Owner transaction
@@ -82,19 +92,17 @@ class MultiWallet extends Model
      */
     public function getNamedTypeAttribute(): string
     {
-        return $this->type < 200
-            ? __(config('im_wallet.debit_names')[$this->type] ?? 'multi_wallet.debit_transaction')
-            : __(config('im_wallet.credit_names')[$this->type] ?? 'multi_wallet.credit_transaction');
+        return $this->type?->translate();
     }
 
     /**
-     *
+     *  attribute signed_amount
      * return amount with signed
      *
      * @return string
      */
     public function getSignedAmountAttribute(): string
     {
-        return ($this->type < 200 ? '+' : '-') . number_format($this->amount, 2);
+        return (($this->type?->value ?? $this->type) < 200 ? '+' : '-') . number_format($this->amount, 2);
     }
 }
