@@ -190,6 +190,7 @@ class ImWalletService
         $codeCurrency = $this->currency?->value;
         $balanceType = $this->balanceType?->value;
 
+
         return !$this->modelRestrictionImWallet::query()
             ->where('target_type', get_class($this->owner))
             ->where('target_id', $this->owner?->id)
