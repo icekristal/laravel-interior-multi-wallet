@@ -1,12 +1,10 @@
 <?php
 return [
-
     'balance_type_enum' => \App\Enums\ImWalletBalanceTypeEnum::class,
     'types_enum' => \App\Enums\ImWalletTypeEnum::class,
     'currency_enum' => \App\Enums\ImWalletCurrencyEnum::class,
 
     'default_code_currency' => \App\Enums\ImWalletCurrencyEnum::YE->value,
-
     'balance_required_type' => \App\Enums\ImWalletBalanceTypeEnum::MAIN->value,
 
 
