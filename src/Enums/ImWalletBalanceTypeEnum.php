@@ -1,9 +1,6 @@
 <?php
 
-namespace Icekristal\LaravelInteriorMultiWallet\Enums;
-
-
-use Icekristal\LaravelInteriorMultiWallet\Trait\BalanceNameTrait;
+namespace App\Enums;
 
 enum ImWalletBalanceTypeEnum: string
 {

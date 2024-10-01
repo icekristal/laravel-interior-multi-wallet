@@ -1,6 +1,6 @@
 <?php
 
-namespace Icekristal\LaravelInteriorMultiWallet\Enums;
+namespace App\Enums;
 
 
 enum ImWalletCurrencyEnum: string
