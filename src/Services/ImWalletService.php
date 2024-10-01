@@ -44,7 +44,7 @@ class ImWalletService
     public function getBalance(Carbon $dateAt = null): float|int
     {
         if(is_null($this->owner)) return 0;
-        return $this->modelImWallet->query()
+        return $this->modelImWallet::query()
             ->where('owner_type', get_class($this->owner))
             ->where('owner_id', $this->owner->id)
             ->where('code_currency', $this->currency->value)
