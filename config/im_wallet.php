@@ -4,8 +4,8 @@ return [
     'types_enum' => \App\Enums\ImWalletTypeEnum::class,
     'currency_enum' => \App\Enums\ImWalletCurrencyEnum::class,
 
-    'default_code_currency' => \App\Enums\ImWalletCurrencyEnum::YE->value,
-    'balance_required_type' => \App\Enums\ImWalletBalanceTypeEnum::MAIN->value,
+    'default_code_currency' => 'ye',
+    'balance_required_type' => 'main',
 
 
     'commission_default' => 0, // percentage commission (%)
