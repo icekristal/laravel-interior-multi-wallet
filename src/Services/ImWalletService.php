@@ -23,7 +23,7 @@ class ImWalletService
     public mixed $type;
     public mixed $currency;
     public mixed $balanceType;
-    public object|null $who;
+    public object|null $who = null;
     public array|null $other = [];
 
     public mixed $modelImWallet = MultiWallet::class;
@@ -33,8 +33,8 @@ class ImWalletService
     {
         $this->modelImWallet = config('im_wallet.multi_wallet_model', MultiWallet::class);
         $this->modelRestrictionImWallet = config('im_wallet.multi_wallet_restriction_model', MultiWalletRestriction::class);
-        $this->balanceType = config('im_wallet.balance_required_type');
-        $this->currency = config('im_wallet.default_code_currency');
+        $this->balanceType = is_string(config('im_wallet.balance_required_type')) ? BalanceTypeCustomCast::setEnum(config('im_wallet.balance_required_type')) : null;
+        $this->currency = is_string(config('im_wallet.default_code_currency')) ? CurrencyCustomCast::setEnum(config('im_wallet.default_code_currency')) : null;
     }
 
     /**
@@ -70,7 +70,7 @@ class ImWalletService
      */
     private function debit(): mixed
     {
-        $this->saveTransaction();
+        return $this->saveTransaction();
     }
 
     /**
@@ -78,7 +78,7 @@ class ImWalletService
      */
     private function credit(): mixed
     {
-        $this->saveTransaction();
+        return $this->saveTransaction();
     }
 
     /**
@@ -96,7 +96,7 @@ class ImWalletService
             'type' => $this->type?->value,
             'currency' => $this->currency?->value,
             'balanceType' => $this->balanceType?->value,
-            'who_type' => get_class($this->who) ?? null,
+            'who_type' => !is_null($this->who) ? get_class($this->who) : null,
             'who_id' => $this->who?->id,
             'other' => $this->other
         ]);
@@ -128,10 +128,10 @@ class ImWalletService
         return Validator::make([
             'owner_id' => $this->owner?->id,
             'amount' => $this->amount,
-            'type' => $this->type,
-            'currency' => $this->currency,
-            'balanceType' => $this->balanceType,
-            'who' => $this->who,
+            'type' => $this->type?->value,
+            'currency' => $this->currency?->value,
+            'balanceType' => $this->balanceType?->value,
+            'who_id' => $this->who?->id ?? null,
             'other' => $this->other,
             'is_block_transaction' => $this->isBlockTransaction()
         ], [
@@ -140,7 +140,7 @@ class ImWalletService
             'type' => ['required', Rule::enum(config('im_wallet.types_enum', ImWalletTypeEnum::class)), 'numeric', 'min:100', 'max:255'],
             'currency' => ['required', Rule::enum(config('im_wallet.currency_enum', ImWalletCurrencyEnum::class))],
             'balanceType' => ['required', Rule::enum(config('im_wallet.balance_type_enum', ImWalletBalanceTypeEnum::class))],
-            'who' => ['nullable'],
+            'who' => ['nullable', 'numeric'],
             'other' => ['nullable', 'array'],
             'is_block_transaction' => ['required', 'accepted']
         ])->passes();
@@ -189,7 +189,6 @@ class ImWalletService
         $type = $this->type?->value;
         $codeCurrency = $this->currency?->value;
         $balanceType = $this->balanceType?->value;
-
 
         return !$this->modelRestrictionImWallet::query()
             ->where('target_type', get_class($this->owner))
