@@ -2,10 +2,10 @@
 
 namespace Icekristal\LaravelInteriorMultiWallet\Facades;
 
+use App\Enums\ImWalletBalanceTypeEnum;
+use App\Enums\ImWalletCurrencyEnum;
+use App\Enums\ImWalletTypeEnum;
 use Carbon\Carbon;
-use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletBalanceTypeEnum;
-use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletCurrencyEnum;
-use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletTypeEnum;
 use Icekristal\LaravelInteriorMultiWallet\Services\ImWalletService;
 use Illuminate\Support\Facades\Facade;
 

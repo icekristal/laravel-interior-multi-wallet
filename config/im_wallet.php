@@ -1,13 +1,13 @@
 <?php
 return [
 
-    'balance_type_enum' => \Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletBalanceTypeEnum::class,
-    'types_enum' => \Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletTypeEnum::class,
-    'currency_enum' => \Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletCurrencyEnum::class,
+    'balance_type_enum' => \App\Enums\ImWalletBalanceTypeEnum::class,
+    'types_enum' => \App\Enums\ImWalletTypeEnum::class,
+    'currency_enum' => \App\Enums\ImWalletCurrencyEnum::class,
 
-    'default_code_currency' => \Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletCurrencyEnum::YE->value,
+    'default_code_currency' => \App\Enums\ImWalletCurrencyEnum::YE->value,
 
-    'balance_required_type' => \Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletBalanceTypeEnum::MAIN->value,
+    'balance_required_type' => \App\Enums\ImWalletBalanceTypeEnum::MAIN->value,
 
 
     'commission_default' => 0, // percentage commission (%)

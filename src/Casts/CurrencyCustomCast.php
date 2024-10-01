@@ -2,7 +2,7 @@
 
 namespace Icekristal\LaravelInteriorMultiWallet\Casts;
 
-use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletCurrencyEnum;
+use App\Enums\ImWalletCurrencyEnum;
 use Illuminate\Config\Repository;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Foundation\Application;

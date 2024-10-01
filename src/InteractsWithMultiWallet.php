@@ -5,15 +5,11 @@ namespace Icekristal\LaravelInteriorMultiWallet;
 use Carbon\Carbon;
 use Exception;
 use Icekristal\LaravelInteriorMultiWallet\Facades\ImWallet;
-use Icekristal\LaravelInteriorMultiWallet\Models\MultiWalletRestriction;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\HigherOrderBuilderProxy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 trait InteractsWithMultiWallet
 {

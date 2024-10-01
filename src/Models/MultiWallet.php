@@ -2,13 +2,13 @@
 
 namespace Icekristal\LaravelInteriorMultiWallet\Models;
 
+use App\Enums\ImWalletBalanceTypeEnum;
+use App\Enums\ImWalletCurrencyEnum;
+use App\Enums\ImWalletTypeEnum;
 use Carbon\Carbon;
 use Icekristal\LaravelInteriorMultiWallet\Casts\BalanceTypeCustomCast;
 use Icekristal\LaravelInteriorMultiWallet\Casts\CurrencyCustomCast;
 use Icekristal\LaravelInteriorMultiWallet\Casts\TypeCustomCast;
-use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletBalanceTypeEnum;
-use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletCurrencyEnum;
-use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletTypeEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
@@ -16,16 +16,16 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property integer $id
  * @property string $owner_type
  * @property integer $owner_id
- * @property TypeCustomCast|ImWalletTypeEnum $type
+ * @property ImWalletTypeEnum $type
  * @property float $amount
  * @property float $commission
  * @property string $who_type
  * @property integer $who_id
  * @property string $other
- * @property CurrencyCustomCast|ImWalletCurrencyEnum $code_currency
+ * @property ImWalletCurrencyEnum $code_currency
  * @property string $signed_amount
  * @property string $named_type
- * @property BalanceTypeCustomCast|ImWalletBalanceTypeEnum $balance_type
+ * @property ImWalletBalanceTypeEnum $balance_type
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */
