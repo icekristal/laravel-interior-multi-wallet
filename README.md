@@ -17,6 +17,11 @@ lang:
 php artisan vendor:publish --provider="Icekristal\LaravelInteriorMultiWallet\IceInteriorMultiWalletServiceProvider" --tag="translations"
 ```
 
+enums:
+```php
+php artisan vendor:publish --provider="Icekristal\LaravelInteriorMultiWallet\IceInteriorMultiWalletServiceProvider" --tag="enums"
+```
+
 
 use:
 ```php
@@ -37,16 +42,16 @@ $balanceOtherCurrencyAndTypeBalance = $modelUser->balance('key_currency', 'demo'
 
 set debit balance:
 ```php
-$modelUser->debitBalance($amount, config('im_wallet.debit.put')); //Debit default currency
-$modelUser->debitBalance($amount, config('im_wallet.debit.put'), 'key_other_currency'); //Debit other currency
-$modelUser->debitBalance($amount, config('im_wallet.debit.put'), 'key_currency', 'type_balance'); //Debit other type_balance, see config im_wallet
+$modelUser->debitBalance($amount, 'key_type'); //Debit default currency
+$modelUser->debitBalance($amount, 'key_type', 'key_other_currency'); //Debit other currency
+$modelUser->debitBalance($amount, 'key_type', 'key_currency', 'type_balance'); //Debit other type_balance, see config im_wallet
 ```
 
 set credit balance:
 ```php
-$modelUser->creditBalance($amount, config('im_wallet.credit.withdrawal')); //Credit default currency
-$modelUser->creditBalance($amount, config('im_wallet.credit.withdrawal'), 'key_other_currency'); //Credit other currency
-$modelUser->creditBalance($amount, config('im_wallet.credit.withdrawal'), 'key_currency', 'type_balance'); //Credit other type_balance, see config im_wallet
+$modelUser->creditBalance($amount, 'key_type'); //Credit default currency
+$modelUser->creditBalance($amount, 'key_type', 'key_other_currency'); //Credit other currency
+$modelUser->creditBalance($amount, 'key_type', 'key_currency', 'type_balance'); //Credit other type_balance, see config im_wallet
 ```
 
 
@@ -67,3 +72,16 @@ $modelUser->unblockTransaction($typeCredit, $codeCurrency, $balanceType); //Unbl
 $modelUser->unblockTransaction($typeCredit, null, $balanceType); //Unblock only typeCredit and balanceType
 $modelUser->unblockTransaction($typeCredit, $codeCurrency); //Unblock only typeCredit and codeCurrency
 ```
+
+Facade Action
+```php  
+ImWallet::setOwner($owner)
+        ->setType($typeCredit)
+        ->setCurrency($codeCurrency)
+        ->setBalanceType($balanceType)
+        ->setAmount($amount)
+        ->setWho($who)
+        ->setOther($otherInfo)
+        ->executeTransaction();
+```
+

@@ -20,9 +20,9 @@ class ImWalletService
 {
     public object|null $owner = null;
     public float|int $amount = 0;
-    public ImWalletTypeEnum $type;
-    public ImWalletCurrencyEnum $currency = ImWalletCurrencyEnum::YE;
-    public ImWalletBalanceTypeEnum $balanceType = ImWalletBalanceTypeEnum::MAIN;
+    public mixed $type;
+    public mixed $currency;
+    public mixed $balanceType;
     public object|null $who;
     public array|null $other = [];
 
@@ -33,6 +33,8 @@ class ImWalletService
     {
         $this->modelImWallet = config('im_wallet.multi_wallet_model', MultiWallet::class);
         $this->modelRestrictionImWallet = config('im_wallet.multi_wallet_restriction_model', MultiWalletRestriction::class);
+        $this->balanceType = config('im_wallet.balance_required_type');
+        $this->currency = config('im_wallet.default_code_currency');
     }
 
     /**
@@ -47,9 +49,9 @@ class ImWalletService
             ->where('owner_id', $this->owner->id)
             ->where('code_currency', $this->currency->value)
             ->when(!is_null($dateAt), fn($q) => $q->where('created_at', '<=', $dateAt))
-            ->where('balance_type', $this->balanceType->value)->select(
-                DB::raw('SUM(CASE WHEN type < 200 THEN amount*1 ELSE amount*-1 END) as amount')
-            )->value('amount') ?? 0;
+            ->where('balance_type', $this->balanceType->value)
+            ->select(DB::raw('SUM(CASE WHEN type < 200 THEN amount*1 ELSE amount*-1 END) as amount'))
+            ->value('amount') ?? 0;
     }
 
     /**
