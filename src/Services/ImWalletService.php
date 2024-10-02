@@ -94,7 +94,7 @@ class ImWalletService
             'amount' => $finalAmount,
             'commission' => $commission,
             'type' => $this->type?->value,
-            'currency' => $this->currency?->value,
+            'code_currency' => $this->currency?->value,
             'balanceType' => $this->balanceType?->value,
             'who_type' => !is_null($this->who) ? get_class($this->who) : null,
             'who_id' => $this->who?->id,
