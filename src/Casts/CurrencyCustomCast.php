@@ -2,7 +2,7 @@
 
 namespace Icekristal\LaravelInteriorMultiWallet\Casts;
 
-use App\Enums\ImWalletCurrencyEnum;
+use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletCurrencyEnum;
 use Illuminate\Config\Repository;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Foundation\Application;
@@ -55,6 +55,6 @@ class CurrencyCustomCast implements CastsAttributes
         if ($value instanceof $enum) {
             return $value;
         }
-        return is_string($value) ? $enum::from($value) : $value;
+        return is_string($value) || is_numeric($value) ? $enum::from($value) : $value;
     }
 }

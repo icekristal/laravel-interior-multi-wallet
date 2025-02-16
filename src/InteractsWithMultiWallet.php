@@ -38,12 +38,12 @@ trait InteractsWithMultiWallet
     /**
      * get balance user
      *
-     * @param string $codeCurrency
+     * @param mixed $codeCurrency
      * @param string|null $balanceType
      * @param ?Carbon $dateAt
      * @return float|int
      */
-    public function balance(string $codeCurrency = 'YE', string|null $balanceType = null, Carbon $dateAt = null): float|int
+    public function balance(mixed $codeCurrency = 'YE', mixed $balanceType = null, Carbon $dateAt = null): float|int
     {
         if (is_null($balanceType)) {
             $balanceType = config('im_wallet.balance_required_type') ?? 'main';
@@ -61,7 +61,7 @@ trait InteractsWithMultiWallet
      * @return Model|null
      * @throws Exception
      */
-    public function debitBalance(float|int $amount, int $typeDebit = 101, string $codeCurrency = 'YE', string $balanceType = 'main', $who = null, array $otherInfo = null): ?Model
+    public function debitBalance(float|int $amount, mixed $typeDebit = 101, mixed $codeCurrency = 'YE', mixed $balanceType = 'main', $who = null, array $otherInfo = null): ?Model
     {
         return ImWallet::setOwner($this)
             ->setType($typeDebit)->setCurrency($codeCurrency)->setBalanceType($balanceType)
@@ -78,7 +78,7 @@ trait InteractsWithMultiWallet
      * @return Model|null
      * @throws Exception
      */
-    public function creditBalance(float|int $amount, int $typeCredit = 203, string $codeCurrency = 'YE', string $balanceType = 'main', $who = null, array $otherInfo = null): ?Model
+    public function creditBalance(float|int $amount, mixed $typeCredit = 203, mixed $codeCurrency = 'YE', mixed $balanceType = 'main', $who = null, array $otherInfo = null): ?Model
     {
         return ImWallet::setOwner($this)
             ->setType($typeCredit)->setCurrency($codeCurrency)->setBalanceType($balanceType)
@@ -92,7 +92,7 @@ trait InteractsWithMultiWallet
      * @param string|null $nameColumn
      * @return Builder
      */
-    public function scopeBalance(Builder $query, string|null $codeCurrency = null, string|null $balanceType = null, string|null $nameColumn = 'amount'): Builder
+    public function scopeBalance(Builder $query, mixed $codeCurrency = null, mixed $balanceType = null, string|null $nameColumn = 'amount'): Builder
     {
         if (is_null($balanceType)) {
             $balanceType = config('im_wallet.balance_required_type') ?? 'main';
@@ -139,7 +139,7 @@ trait InteractsWithMultiWallet
      * @param array|null $other
      * @return Model
      */
-    public function blockTransaction(?int $type = null, string|int|null $codeCurrency = null, string|null $balanceType = null, $untilAt = null, ?array $other = null): Model
+    public function blockTransaction(mixed $type = null, mixed $codeCurrency = null, mixed $balanceType = null, $untilAt = null, ?array $other = null): Model
     {
         return ImWallet::setOwner($this)->setType($type)->setCurrency($codeCurrency)->setBalanceType($balanceType)->blockTransaction($untilAt, $other);
     }
@@ -150,7 +150,7 @@ trait InteractsWithMultiWallet
      * @param string|null $balanceType
      * @return mixed
      */
-    public function unblockTransaction(?int $type, string|int|null $codeCurrency, ?string $balanceType): mixed
+    public function unblockTransaction(mixed $type, mixed $codeCurrency, ?string $balanceType): mixed
     {
         return ImWallet::setOwner($this)->setType($type)->setCurrency($codeCurrency)->setBalanceType($balanceType)->unBlockTransaction();
     }

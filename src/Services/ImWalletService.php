@@ -2,9 +2,9 @@
 
 namespace Icekristal\LaravelInteriorMultiWallet\Services;
 
-use App\Enums\ImWalletBalanceTypeEnum;
-use App\Enums\ImWalletCurrencyEnum;
-use App\Enums\ImWalletTypeEnum;
+use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletBalanceTypeEnum;
+use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletCurrencyEnum;
+use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletTypeEnum;
 use Carbon\Carbon;
 use Exception;
 use Icekristal\LaravelInteriorMultiWallet\Casts\BalanceTypeCustomCast;
@@ -248,10 +248,10 @@ class ImWalletService
     }
 
     /**
-     * @param int|ImWalletTypeEnum $type
+     * @param mixed $type
      * @return $this
      */
-    public function setType(int|ImWalletTypeEnum $type): ImWalletService
+    public function setType(mixed $type): ImWalletService
     {
         $this->type = TypeCustomCast::setEnum($type);
         return $this;
@@ -278,20 +278,20 @@ class ImWalletService
     }
 
     /**
-     * @param string|ImWalletCurrencyEnum $currency
+     * @param mixed $currency
      * @return $this
      */
-    public function setCurrency(string|ImWalletCurrencyEnum $currency): ImWalletService
+    public function setCurrency(mixed $currency): ImWalletService
     {
         $this->currency = CurrencyCustomCast::setEnum($currency);
         return $this;
     }
 
     /**
-     * @param string|ImWalletBalanceTypeEnum $balanceType
+     * @param mixed $balanceType
      * @return $this
      */
-    public function setBalanceType(string|ImWalletBalanceTypeEnum $balanceType): ImWalletService
+    public function setBalanceType(mixed $balanceType): ImWalletService
     {
         $this->balanceType = BalanceTypeCustomCast::setEnum($balanceType);
         return $this;

@@ -2,9 +2,9 @@
 
 namespace Icekristal\LaravelInteriorMultiWallet\Models;
 
-use App\Enums\ImWalletBalanceTypeEnum;
-use App\Enums\ImWalletCurrencyEnum;
-use App\Enums\ImWalletTypeEnum;
+use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletBalanceTypeEnum;
+use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletCurrencyEnum;
+use Icekristal\LaravelInteriorMultiWallet\Enums\ImWalletTypeEnum;
 use Carbon\Carbon;
 use Icekristal\LaravelInteriorMultiWallet\Casts\BalanceTypeCustomCast;
 use Icekristal\LaravelInteriorMultiWallet\Casts\CurrencyCustomCast;
