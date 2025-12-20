@@ -31,6 +31,7 @@ class ImWallet extends Facade
         return 'im_wallet.service';
     }
 
+
     /**
      * @throws BindingResolutionException
      */
