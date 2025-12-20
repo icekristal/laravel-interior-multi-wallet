@@ -7,6 +7,7 @@ use App\Enums\ImWalletCurrencyEnum;
 use App\Enums\ImWalletTypeEnum;
 use Carbon\Carbon;
 use Icekristal\LaravelInteriorMultiWallet\Services\ImWalletService;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Facade;
 
 /**
@@ -28,5 +29,13 @@ class ImWallet extends Facade
     protected static function getFacadeAccessor(): string
     {
         return 'im_wallet.service';
+    }
+
+    /**
+     * @throws BindingResolutionException
+     */
+    protected static function resolveFacadeInstance($name)
+    {
+        return app()->make($name);
     }
 }
