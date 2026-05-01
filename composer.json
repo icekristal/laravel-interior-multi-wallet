@@ -12,7 +12,7 @@
     "minimum-stability": "dev",
     "require": {
         "php": "^8.2",
-        "laravel/framework": "^10|^11|^12"
+        "laravel/framework": "^10|^11|^12|^13"
     },
     "autoload": {
         "psr-4": {
